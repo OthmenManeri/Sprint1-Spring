@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="navbar" xmlns:sec=https://www.thymeleaf.org/thymeleaf-extras-springsecurity5>
+<head>
+<meta charset="utf-8">
+<title>Liste des meuble</title>
+<link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.0.0/css/bootstrap.min.css" />
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div layout:fragment="Mynavbar">
+    <div class="container mt-5">
+    <div class="card">
+     <div class="card-header">
+     <h3>Liste des meuble</h3>
+     </div>
+     <div class="card-body"> 
+     <table align='center' width='100%'><tr><td>
+                <form class="search-box" name="searchForm" th:action="@{search}" method="GET">
+                    </aside>
+                    <div th:if="${mode!='Searchtype'}">
+                    <div class="form-group"> 
+                    <label class="control-label">Chercher Par Nom meuble :</label>
+                    <input type="search" id="myInput" name='nom' class="form-control" placeholder="Chercher Nom meuble..." th:value="${nommeuble}" />
+                    </div></div>
+                    </aside>
+                </form>
+                </td>
+                <td></td> <td></td> <td></td>
+             <td>
+              <form class="search-box" name="searchFormtype" th:action="@{searchtype}" method="GET">
+                    </aside> 
+                 
+                    <div class="form-group"> 
+<label class="control-label">Chercher Par type :</label>
+ <select name="type" class="form-control" th:if= "${!#strings.isEmpty(type)}"  onchange="this.form.submit()" required>  
+  <option th:value="0" selected>-- Choisir type Pour Chercher --</option>
+ <option th:each="c : ${type}" th:value="${c.idtype}" th:text="${c.nomtype}"></option>
+ </select>
+ 
+                    </div>
+       
+                    </aside>
+                </form>
+             </td></tr></table>
+             
+     <table id="myTable" class="table table-striped" style="text-align: center;">
+     <tr>
+     <th>ID</th><th>Nom meuble</th><th>Prix</th><th>type</th><th  colspan="2">Actions</th>
+     </tr> 
+     <tr th:each="p:${meuble}">
+     <td th:text="${p.idmeuble}"></td>
+     <td th:text="${p.nommeuble}"></td>
+     <td th:text="${p.type_idtype}"></td> 
+
+     
+          <td th:if= "${!#strings.isEmpty(p.type_idtype)}" th:text="${p.type_idtype.nomtype}"></td>  
+  <td th:if= "${#strings.isEmpty(p.type_idtype)}" th:text="${'Pas de Catégorie'}"></td>
+    <td sec:authorize="hasRole('ADMIN')" ><a class="btn btn-danger"
+onclick="return confirm('Etes-vous sûr ?')"
+th:href="@{supprimermeuble(id=${p.idmeuble}, 
+page=${currentPage},size=${size})}">Supprimer</a>
+</td>
+   <td sec:authorize="hasRole('ADMIN')"><a class="btn btn-success"
+th:href="@{modifiermeuble(id=${p.idmeuble})}">Editer</a></td>
+     </tr> 
+     </table>
+     <ul class="nav nav-pills">
+     <li th:each="page,status:${pages}">
+     <a th:class="${status.index==currentPage?'btn btn-primary':'btn' }"
+     th:href="@{ Listemeuble(page=${status.index}, size=${size} ) }"
+     th:text="${status.index }"></a>
+     </li>
+     </ul>
+     <hr>
+      <center> <div th:if="${mode=='Searchtype'}">
+      <a th:href="@{Listemeuble}" ><button type="button" class="btn btn-primary">Retour</button></a>
+          </div></center>
+          
+           <center> <div th:if="${mode=='Searchtype'}">
+      <a th:href="@{Listemeuble}" ><button type="button" class="btn btn-primary">Retour</button></a>
+          </div></center>
+     </div>
+    </div>
+    </div>
+    </div>
+        
+    </body>
+</html>
